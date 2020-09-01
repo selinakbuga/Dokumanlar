@@ -15,5 +15,3 @@ Bu proje ile;
 * Gerektiğinde yerli insan gücü ile destek ve danışmanlık hizmetleri sağlanması,
 
 hedeflenmiştir.
-
-Yerli bir işletim sistemi çözümü olan Pardus üzerinde geliştirilmekte olan bu projenin en önemli çıktılarından biri de hiç şüphesiz Türkçe dokümantasyon olacaktır. Hazırlanacak kurulum, yönetim ve yapılandırma şablonları ile sistemi kullanmak isteyen herkesin tüm bileşenleri rahatça kullanabilmesi ve yönetebilmesi planlanmaktadır. Böylece ülke siber güvenliği için çok önemli bir eksik de giderilmiş olacaktır.

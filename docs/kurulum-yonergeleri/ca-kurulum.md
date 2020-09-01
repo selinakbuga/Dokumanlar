@@ -10,13 +10,6 @@
 
 Bu dokümanda, Ahtapot bütünleşik güvenlik yönetim sisteminde kullanılan SSH anahtarlarını yöneten Sertifika Otoritesi (CA - Certificate Authority) sisteminin kurulması ve anahtar imzalama prosedürü anlatılmaktadır.
 
-Gereken : 
-Pardus Temel ISO’ dan kurulumu tamamlanmış bir sunucu.
-
-
-#### Önemli Uyarılar
-  * Kurulacak sunucu, PKI (Public Key Infrastructure) yapısının omurgasını teşkil edeceğinden yüksek düzeyli korunacak sistemler arasında yer almalıdır.
-
 #### Sertifika Otoritesi Temel Anahtarı Oluşturma
 
 **UYARI :** Aşağıdaki adımların çalıştırılacağı sistem "**Ahtapot Sertifika Otoritesi Sunucusu**" olmalıdır.

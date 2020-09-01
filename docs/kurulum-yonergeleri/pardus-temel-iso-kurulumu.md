@@ -76,23 +76,9 @@ Bu dokümanda, Ahtapot projesi kapsamında kullanılmak üzere üretilmiş minim
 
 ![ULAKBIM](../img/ahtapotiso_kurulum_gorseller/16.png)
 
-  * Kurulumun tamamlanmasından sonra preseed yapılandırması ile kuruluma eklenmiş ve sistemin hazır hale gelmesine yardımcı olacak aşağıdaki adımlar da gerçekleşmiştir.
+* Kurulumun tamamlanmasından sonra preseed yapılandırması ile kuruluma eklenmiş ve sistemin hazır hale gelmesine yardımcı olacak aşağıdaki adımlar da gerçekleşmiştir.
 	* python, sudo,openssh-server paketleri kurulmuştur.
 	* ahtapotops isimli bir kullanıcı ve grup oluşturulmuştur.
-	* ahtapotops kullanıcısına parolasız erişim için gerekli yapılandırmalar yapılmıştır.
-	Bu işlemler: 
-		* ISO içerisinde bulunan ahtapot_ca.pub dosyası, parolasız erişimlerde anahtarın yetkisini kontrol etmek için /etc/ssh/ahtapot_ca.pub dizinine kopyalanır. 
-		* /etc/sudoers dosyasına ahtapotops kullanıcısı ile parolasız root yetkilerine sahip olabilmesi için **'ahtapotops  ALL=(ALL:ALL) NOPASSWD:ALL'**  satırı eklenir.
-		* Sertifika otoritesi tarafından imzalanacak anahtarlar ile güvenli giriş yapılabilmesi için “**TrustedUserCAKeys /etc/ssh/ahtapot_ca.pub**" satırı /etc/ssh/sshd_config dosyasına eklenir.
-  * Disk yapılandırma için LVM kullanılmakta olup, kurulum tamamlandığında aşağıdaki şekilde disk yapılandırması mevcut olacaktır.
-
-| Dizin Adı | Dosya Sistemi | Boyut                   |
-| --------- | ------------- | ----------------------- |
-| BIOS boot | -             | 1 MB                    |
-| /boot     | ext3          | 250 MB                  |
-| /         | ext4          | 50 GB                   |
-| /var/log  | ext4          | Disk üzerinde kalan yer |
-------
 
  * Pardus Temel ISO kurulumu sonrasında istemci üzerinde bulunan tüm paketlerin listesi aşağıdaki gibidir;
 
