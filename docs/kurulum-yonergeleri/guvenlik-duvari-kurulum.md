@@ -1,31 +1,35 @@
 ![ULAKBIM](../img/ulakbim.jpg)
 #Güvenlik Duvarı Yönetim Sistemi Kurulumu
-------
+------------------------------------------
 
 [TOC]
 
 
 
- |   İsterler	|   İşletim Sistemi   |
- |  ----------	|  -----------------  |
- |     MYS	|   Pardus-Ahtapot17  |
- |     VCS	|   Pardus-Ahtapot17  |
+ |	İsterler		|   İşletim Sistemi   |
+ |	----------		|  -----------------  |
+ |Firewall Builder Sunucusu	|   Pardus-Ahtapot17  |
+ |Firewall Sunucusu		|   Pardus-Ahtapot17  |
+ |Test Firewall Sunucusu	|   Pardus-Ahtapot17  |
 
 
 ####Ansible Playbook ile FirewallBuilder Kurulumu
 
-**NOT:** Kurulacak sistem, SIEM yapısına dahil edilmek isteniyorsa, kurulum sonrasında Siber Olay, Açıklık, Risk İzleme ve Yönetim Sistemi Kurulumu sayfasında bulunan [MYS Clientlarında Ossec Agent Dağıtımı](siem-kurulum.md) başlığı incelenmelidir.
-
-* FirewallBuilder rolüne sahip sunucusu GitLab sunucusuna bağlanacağı için ssh bağlantısında kullanacağı ssh anahtarları ilgili yerlere yerleştirilmelidir. Bunun için ahtapotops kullanıcısı için oluşturulmuş ssh anahtarları sunucuya kopyalanır ve gerekli düzenlemeler aşağıdaki gibi yapılır.
+* FWB sunucusu VCS ve MYS sunucuları ile ssh bağlantısın kullanacağı için oluşturulan anahtarlar FWB sunucusuna aktarılır ve ilgili yerlere yerleştirilir. 
 
 ```
-$ cd /home/ahtapotops/.ssh/
-$ mv ahtapotops id_rsa
-$ mv ahtaporops-cert.pub id_rsa-cert.pub
-$ mv ahtapotops.pub id_rsa.pub
-$ chmod 600 id_rsa
+$ mkdir -p /home/ahtapotops/.ssh && chmod 700 ~/.ssh
+$ touch /home/ahtapotops/.ssh/authorized_keys
+$ cat ahtapotops.pub fw_kullanici.pub >> ~/.ssh/authorized_keys
+$ cp ahtapotops ~/.ssh/id_rsa && cp ahtapotops.pub ~/.ssh/id_rsa.pub && cp ahtapotops-cert.pub ~/.ssh/id_rsa-cert.pub && chmod 600 ~/.ssh/*
 ```
-*  Gitlab arayüzünden veya MYS sunusundan **roles/firewallbuilder/vars/git.yml** dosyası üzerinde **repo01** fonksiyonu altında **repo** satırında bulunan **yerel_gitlab_adresi** bölümünün yerine Merkezi Yönetim Sistemi kapsamında kurulacak Git sunucusunun adresi girilmelidir.
+```
+# mkdir -p /root/.ssh &&
+# cp git /root/.ssh/id_rsa && cp git.pub /root/.ssh/id_rsa.pub && cp git.pub /root/authorized_keys
+```
+
+
+*  **/etc/ansible/roles/firewallbuilder/vars/git.yml** dosyası üzerinde **yerel_gitlab_adresi** bölümüne kurulan Git sunucusunun adresi girilmelidir.
 
 ```
 $ nano /etc/ansible/roles/firewallbuilder/vars/git.yml
@@ -42,7 +46,7 @@ gitrepos:
 #        destination: ""
 #        key_file: ""
 ```
-* **/etc/ansible/roles/firewallbuilder/vars/fwbuilder.yml** dosyasında düzenleme yapılacak firewallbuilder sunucusunun bilgisi girilir.
+* **/etc/ansible/roles/firewallbuilder/vars/fwbuilder.yml** dosyasında **firewallbuilder** sunucusunun bilgileri girilir.
 
 ```
 nano /etc/ansible/roles/firewallbuilder/vars/fwbuilder.yml
@@ -65,13 +69,6 @@ firewallbuilder:
             mode: "0755"
 
 fwb_editable_objects:
-    FWBUILDER_SERVER_FQDN01:
-    FWBUILDER_SERVER_FQDN02:
-    #FW.DOMAIN:
-    #    - objects:
-    #        - birinci
-    #        - ikinci
-
 #örnek olarak
 #fwb_editable_objects:
 #   fwb.ahtapot.org.tr:
@@ -80,223 +77,59 @@ fwb_editable_objects:
 #            - ikinci
 
 ```
-* “**Ansible Playbookları**” dokümanında detaylı anlatımı bulunan, sunucu üzerinde gerekli sıkılaştırma işlemleri ve FirewallBuilder kurulumu yapacak olan “**firewallbuilder.yml**” playbook’u Ansible makinesinden aşağıdaki komut ile çalıştırılır.
+* Sunucu üzerinde gerekli sıkılaştırma işlemleri ve FirewallBuilder kurulumu yapacak olan “**firewallbuilder.yml**” playbook’u Ansible makinesinden çalıştırılır.
 
 ```
-$ cd /etc/ansible/
-$ ansible-playbook playbooks/firewallbuilder.yml -k
+$ ansible-playbook /etc/ansible/playbooks/firewallbuilder.yml
 ```
-
-* Firewall Builder makinesinde gyds-gui dizinine izin vermek için aşağıdaki komut Firewallbuilder makinesinden çalıştırılır
+* FWB sunucusu VCS sunucusu ile root kullanıcısı ve git anahtarı iletişim sağlamaktadır. Bağlantının sağlandığını kontrol etmek için aşağıdaki adımları izleyiniz. Bağlantı sorunsuzsa ssh bağlantısını bitiriniz.
 
 ```
+FWB makinesine ssh ile bağlanınız.
+$ ssh fwbuilder.fqdn_bilgisi 
+$ sudo su -
+# cd /etc/fw/gdys/
+# git status
+# git pull
+```
+* GDYS için yapılan son değişiklikler için repo indirilir ve değişiklikler uygulanır.
+
+```
+$ git clone -b development https://github.com/Pardus-Ahtapot/GDYS.git
+$ cp -r GDYS/ahtapot-gdys-gui/var/opt/gdysgui/*  /var/opt/gdysgui/
 $ sudo chown -R ahtapotops:ahtapotops /var/opt/gdysgui/*
+$ nano /var/opt/gdysgui/gitlab.py
 ```
+* Gitlab sunucusunun FWB ile iletişiminde SSL kullanmak istemiyorsanız **def __init__(self, host, token="", oauth_token="", verify_ssl=True):** satırı **False** yapılır.
 
-**NOT :** FirewallBuilder makinesi yedekli kurulacak ise, yedek olacak makinenin üzerinde bu adım el ile yapılmalıdır.
-
+```
+$ nano /var/opt/gdysgui/gitlab.py
+```
 
 ####Ansible Playbook ile Test Firewall Kurulumu
 
-**NOT:** Kurulacak sistem, SIEM yapısına dahil edilmek isteniyorsa, kurulum sonrasında Siber Olay, Açıklık, Risk İzleme ve Yönetim Sistemi Kurulumu sayfasında bulunan [MYS Clientlarında Ossec Agent Dağıtımı](siem-kurulum.md) başlığı incelenmelidir.
-
-* “**Ansible Playbookları**” dokümanında detaylı anlatımı bulunan, sunucu üzerinde gerekli sıkılaştırma işlemleri ve Test Firewall kurulumu yapacak olan “**testfirewall.yml**” playbook’u çalıştırılır.
+* MYS sunucuları ile ssh bağlantısın kullanacağı için oluşturulan anahtarlar TFW sunucusuna aktarılır ve ilgili yerlere yerleştirilir. 
 
 ```
-$ cd /etc/ansible/
-$ ansible-playbook playbooks/testfirewall.yml
-```
-####Ansible Playbookları ile NTP Kurulumu
-* “roles/base/vars” klasörü altında ntp değişkenlerinin barındıran “ntp.yml” dosyası içerisine "base_ntp_servers" fonksiyonu altında bulunan "server1" ve "server2" satırları altına NTP sunucularının FQDN bilgileri girilmelidir. Sistemde bir NTP sunucusu olduğu durumda "server2" satırları silinebilir yada istenildiği kadar NTP sunucusu eklenebilir.
-
-```
-$ cd roles/base/vars/
-$ sudo vi ntp.yml
-# Zaman sunucusu ayarlarini iceren dosyadir.
-# Yorum satiri ile gosterilen sablon doldurularak istenilen kadar zaman sunucusu eklenebilir.
-ntp:
-    conf:
-        source: "ntp.conf.j2"
-        destination: "/etc/ntp.conf"
-        owner: "root"
-        group: "root"
-        mode: "0644"
-   service:
-        name: "ntp"
-        state: "started"
-        enabled: "yes"
-
-base_ntp_servers:
-    server1:
-        fqdn: "0.tr.pool.ntp.org"
-    server2:
-        fqdn: "1.tr.pool.ntp.org"
-#    serverX:
-#        fqdn: ""
+$ ssh-copy-id tfw.ahtapot.org.tr
 ```
 
-```
-$ ansible-playbook /etc/ansible/playbooks/ntp.yml
-```
-####Ansible Playbookları ile Rsyslog Kurulumu
-**NOT:**Kurulacak sistem, SIEM yapısına dahil edilmek isteniyorsa, kurulum sonrasında Siber Olay, Açıklık, Risk İzleme ve Yönetim Sistemi Kurulumu sayfasında bulunan MYS Clientlarında Ossec Agent Dağıtımı başlığı incelenmelidir.
-* "roles/base/vars” klasörü altında rsyslog değişkenlerinin barındıran “rsyslog.yml” dosyası içerisine "base_ossimcik_servers" fonksiyonu altında bulunan “server1” ve “server2” satırları altına ossimcik sunucularına ait bilgiler girilmelidir. Sistemde bir ossimcik sunucusu olduğu durumda “server2” satırları silinebilir yada istenildiği kadar ossimcik sunucusu eklenebilir. Ossimcik makinelerine log gonderilmesi istenilen clientların "client" içerisinde FQDN bilgileri girilir.
-```
-$ cd roles/base/vars/
-$ sudo vi rsyslog.yml
-# Log sunucu ayarlarini iceren dosyadir.
-# Yorum satiri ile gosterilen sablon doldurularak istenilen kadar log sunucusu eklenebilir.
-rsyslog:
-    conf:
-        source: "rsyslog.conf.j2" 
-        destination: "/etc/rsyslog.conf" 
-        owner: "root" 
-        group: "root" 
-        mode: "0644" 
-    service:
-        name: "rsyslog" 
-        state: "started" 
-        enabled: "yes"
-    ActionQueueMaxDiskSpace: "2g"
-    ActionQueueSaveOnShutdown: "on" 
-    ActionQueueType: "LinkedList" 
-    ActionResumeRetryCount: "-1" 
-    WorkDirectory: "/var/spool/rsyslog" 
-    IncludeConfig: "/etc/rsyslog.d/*" 
-
-base_ossimcik_servers:
-    server1:
-        fqdn: "ossimcik.gdys.local" 
-        port: "514" 
-        severity: "*"
-        facility: "*"
-        clients:
-            client01:
-                fqdn: "ansible_fqdn"
-            client02:
-                fqdn: "gitlab_fqdn"
-#    serverX:
-#        fqdn: "" 
-#        port: "" 
-#        severity: "*"
-#        facility: "*"
-#        clients:
-#            client01:
-#                fqdn:
-```
-**NOT:** Log gönderici client makinelerine rsyslog icin gerekli anahtarlar konulmalıdır.
-
-**NOT:** Anahtar oluşturulması için [CA Kurulumu ve Anahtar Yönetimi](ca-kurulum.md) dökümanındaki SSL Anahtar Oluşturma başlığı incelenmelidir. Oluşturulan anahtarlar client makineler içerisinde aşağıdaki dizinlere konulmalıdır. “client_fqdn” yerine client makinenin FQDN bilgisi girilmelidir.
-```
-/etc/ssl/certs/rootCA.pem
-/etc/ssl/certs/client_fqdn.crt
-/etc/ssl/private/client_fqdn.key
-```
-* “Ansible Playbookları” dokümanında detaylı anlatımı bulunan, sunucu üzerinde gerekli sıkılaştırma işlemleri ve rsyslog kurulumu yapacak olan “rsyslog.yml” playbook’u çalıştırılır.
-```
-$ ansible-playbook /etc/ansible/playbooks/rsyslog.yml
-```
-####Ansible Playbookları ile GKTS Kurulumu
-* “roles/gkts/vars/” klasörü altında değişkenleri barındıran “gkts.yml” dosyası üzerinde “hook” fonksiyonu altında bulunan “server” değişkenine Merkezi Yönetim Sisteminde bulunan ansible makinasının FQDN bilgisi, “port” değişkenine ansible makinesine ssh bağlantısı için kullanılcak ssh port bilgisi yazılır.
-```
-$ cd roles/gkts/vars/
-$ sudo vi gkts.yml
-# GKTS'in degiskenlerini iceren dosyadir
-gkts:
-# gkts playbooku ile kurulacak paketleri belirtmektedir.
-    hook:
-        conf:
-            source: gktshook.sh.j2
-            destination: /var/opt/ahtapot-gkts/gktshook.sh
-            owner: ahtapotops
-            group: ahtapotops
-            mode: 755
-        server: ansible01.gdys.local
-        port: 22
-```
-* "roles/gkts/vars/" dizini altında bulunan "nginx.yml" dosyası içerisine “nginx” fonksiyonunun alt fonksinyonu olan “admin” altında bulunan “server_name” değişkenine admin arayüzü için ayarlanması istenen url adres bilgisi yazılır (Örn: admin.gkts.local). Yönetici arayüzüne erişim için internet tarayıcısında bu adres kullanılacaktır. “nginx” fonksiyonunun alt fonksinyonu olan “developer” altında bulunan “server_name” değişkenine kullanıcı arayüzü için ayarlanması istenen domain adres bilgisi yazılır(Örn: kullanici.gkts.local). Kullanıcı arayüzüne erişim için internet tarayıcısında bu adres kullanılacaktır.
-```
-$ cd roles/gkts/vars/
-$ sudo vi nginx.yml
-# Nginx'in degiskenlerini iceren dosyadir
-nginx:
-    conf:
-        source: "gkts.conf.j2" 
-        destination: "/etc/nginx/conf.d/gkts.conf" 
-        owner: "root"
-        group: "root" 
-        mode: "0644" 
-    admin:
-        listen: "443" 
-        server_name: "admin_url_adresi" 
-        access_log: "/var/log/nginx/gkts-admin-access.log"
-        error_log: "/var/log/nginx/gkts-admin-error.log"
-    developer:
-        listen: "443" 
-        server_name: "kullanici_url_adresi" 
-        access_log: "/var/log/nginx/gkts-developer-access.log"
-        error_log: "/var/log/nginx/gkts-developer-error.log"
-    service:
-        name: "nginx" 
-        state: "started" 
-        enabled: "yes" 
-    default:
-        path: "/etc/nginx/sites-available/default"
-        state: "absent"
-    certificate:
-        source: "gkts.crt.j2"
-        destination: "/etc/nginx/ssl/gkts.crt"
-        owner: "root"
-        group: "root"
-        mode: "0644"
-    key:
-        source: "gkts.key.j2"
-        destination: "/etc/nginx/ssl/gkts.key"
-        owner: "root"
-        group: "root"
-        mode: "0644"
-    ssldir:
-        path: "/etc/nginx/ssl"
-        owner: "root"
-        group: "root"
-        mode: "755"
-        state: "directory"
-```
-
-####Merkezi Yönetim Sistemi Entegrasyon Adımları
-* Playbooklar üzerinde değişiklik yapıldıktan sonra sonra, yapılan değişikliklerin git reposunda güncellenmesi için aşağıdaki komutlar çalıştırılır.
+* Sunucu üzerinde gerekli sıkılaştırma işlemleri ve Test Firewall kurulumu yapacak olan “**testfirewall.yml**” playbook’u çalıştırılır.
 
 ```
-# cd /etc/ansible/
-# git pull
-```
-* Tüm playbookları Ansible makinesinden ilgili sistemlerde oynatarak güncel hallerinin çalışması sağlanır.
-
-```
-# cd /etc/ansible
-# ansible-playbook playbooks/ansible.yml
-# ansible-playbook playbooks/gitlab.yml
-# ansible-playbook playbooks/firewallbuilder.yml
-# ansible-playbook playbooks/testbuilder.yml
-# ansible-playbook playbooks/firewall.yml --skip-tags=deploy
-# ansible-playbook playbooks/rsyslog.yml 
-```
-
-* Kurulan tüm ana bileşen ve güvenlik duvarı durum kontrolü için, Ansible sunucusu üzerinde crontab’ a “**crontab -e**” komutu kullanılarak aşağıdaki komutlar eklenir. Böylelikle her beş dakikada bir yeni güvenlik duvarı kuralları sisteme otomatik gönderilerek, durum kontrölü sağlanır. Ayrıca girişi yapılmış ve onaylanmış her yeni kural en geç beş dakika içerisinde sistemlerde aktif hale gelir. Her otuz dakikada bir ana bileşenlerin hepsi kontrol edilerek, kontrol dışı yapılan değişiklikler kaldırılır. Her bir crontab işinin başına eklenen “**MAILTO=**” parametresi ile crontab işi her çalıştığında mail göndermesi engellenir. 
-
-```
-MAILTO=“”
-*/30 * * * * /usr/bin/ansible-playbook /etc/ansible/playbooks/state.yml -vvvv
-MAILTO=“”
-59 00 * * * /usr/bin/ansible-playbook /etc/ansible/playbooks/maintenance.yml -vvvv
+$ ansible-playbook /etc/ansible/playbooks/testfirewall.yml
 ```
 
 
 ####Ansible Playbook ile Firewall Kurulumu
 
-**NOT:** Kurulacak sistem, SIEM yapısına dahil edilmek isteniyorsa, kurulum sonrasında Siber Olay, Açıklık, Risk İzleme ve Yönetim Sistemi Kurulumu sayfasında bulunan [MYS Clientlarında Ossec Agent Dağıtımı](siem-kurulum.md) başlığı incelenmelidir.
+* MYS makinasından FW makinasına paroalsız ssh bağlantısı sağlanmalıdır.
+```
+$ ssh-copy-id fw.ahtapot.org.tr
+```
 
-* “roles/firewall/vars” klasörü altında iptables değişkenlerini barındıran “iptables.yml” dosyası üzerinde “deploy” fonksiyonu altındaki “dest_port" bölümüne yerine Merkezi Yönetim Sistemi kapsamında kurulacak Git sunucusunun ssh portu girilmelidir.
+* “roles/firewall/vars” klasörü altında iptables değişkenlerini barındıran “iptables.yml” dosyası üzerinde “deploy” fonksiyonu altındaki “dest_port" bölümüne yerine 
+Merkezi Yönetim Sistemi kapsamında kurulacak Git sunucusunun ssh portu girilmelidir.
 
 ```
 $ cd roles/firewall/vars/
@@ -317,21 +150,40 @@ iptables:
 * “**Ansible Playbookları**” dokümanında detaylı anlatımı bulunan, sunucu üzerinde gerekli sıkılaştırma işlemleri ve Firewall kurulumu yapacak olan “**firewall.yml**” playbook’u çalıştırılır.
 
 ```
-$ cd /etc/ansible/
-$ ansible-playbook playbooks/firewall.yml --skip-tag=deploy 
+$ ansible-playbook /etc/ansible/playbooks/firewall.yml --skip-tags=deploy
+```
+
+* Dokümanda yapılması istenilen değişiklikler terminal üzerinden yapıldığında  playbook oynatılmadan önce yapılan değişiklikler git’e push edilmelidir.
+
+```
+$ cd /etc/ansible
+git status komutu ile yapılan değişiklikler gözlemlenir.
+$ git status  
+$ git add --all
+$ git commit -m "yapılan değişiklik commiti yazılır"
+$ git push origin master
 ```
 
 ####Güvenlik Duvarı Yönetim Sistemi Entegrasyon Adımları
 
-*  Firewall Builder makinesinden Güvenlik Duvarı Yönetim Sistemi Kontrol Paneli ile GitLab sunucusuna erişmek için, FirewallBuilder makinesine ssh ile bağlanarak, GitLab sunucusunun SSL sertifikası yüklenir. Bu amaç için, Firewall builder makinesine ahtapotops kullanıcısı ile bağlanılarak root kullanıcısına geçilir. 
-* SSL sertifika oluşturma için [SSL Anahtar Oluşturma](ca-kurulum.md) incelenmelidir.
-
+* FWB makinasına bağlanılır ve arayüz yapılandırması yapılır. 
 
 ```
 $ ssh ahtapotops@firewallbuilder -p ssh_port -i ahtapotops_kullanici_anahtari
-$ sudo su -
 ```
 
+* GitLab sunucusunu SSL sertifikası ile kullanmak istemiyorsanız, FWB makinasında ***/var/opt/gdysgui/** dizininde  **def __init__(self, host, token="", oauth_token="", verify_ssl=False):** satırı **False** yapınız ve sonraki başlığa arayüz yapılandırmaasına geçiniz.
+
+```
+$ nano /var/opt/gdysgui/gitlab.py
+```
+
+* FWB makinesinden GDYS Kontrol Paneli ile GitLab sunucusuna oluşturulan SSL sertifikaları ile erişmek için GitLab sunucusunun SSL sertifikası yüklenir. Oluşturmadı iseniz bu adımları atlayınız.
+* SSL sertifika oluşturma için [SSL Anahtar Oluşturma](ca-kurulum.md) incelenmelidir.
+
+```
+$ sudo su -
+```
 * Gitlab üzerinde https bağlantısını kullanıldığından, Gitlab tarafında oluşturulmuş sertifika firewallbuilder makinesine tanıtılır. Bu işlem için Firewall Builder makinesinde “**/usr/share/ca-certificates**” klasörü altına oluşturulan sertifika dosyası kopyalanır.
 * Sertifika yüklemek için kullanılacak ncurs menünün açılması için environment ayarlarından “**DEBIAN_FRONTEND**” seçeneği kaldırılır.
 
@@ -353,14 +205,14 @@ $ sudo su -
 
 ![Guvenlik-Duvari](../img/entegrasyon4.png)
 
-* Firewall Builder makinesinin gitlab arayüzüne erişimini sağlamak için makine içerisinde "**ssh-keygen**" komutu ile key oluşturulmalıdır. Aşağıdaki komut çalıştırıldıkdan sonra "**/home/ahtapotops/.ssh**" dizini içerisine public ve private keylerin oluşuturulduğu görülmektedir.
+
+####Güvenlik Duvarı Yönetim Sistemi Arayüz Yapılandırması
+
+* FWB makinesine erişmek için fw_kullanici anahtarı kullanılacaktır. Oluşturduğunuz fw_kullanici anahtarını masaüstü ortamı olan bilgisayarıza aktarınız. 
+
 ```
-ssh-keygen -Lf id_rsa-cert.pub
-```
-* Gitlab arayüzüne Firewall Builder makinesinin bağlanabilmesi için yukarıda oluşuturulan ve  "**/home/ahtapotops/.ssh**" dizini içerisinde buşunan "**id_rsa.pub**" public keyi Gitlab Kurulum dosyasında antıldığı gibi ssh key olarak eklenmelidir.
-* AHTAPOT [CA Kurulumu ve Anahtar Yönetimi](ca-kurulum.md) dokümanında tarif edildiği üzere, her kullanıcı için X11 kullanabilecek ve sadece FirewallBuilder uygulamasına erişebilecek  kısıtlı erişime sahip olacak CA anahtarı oluşturulur. Kullanıcılar için anahtar oluşturulması tamamlandıktan sonra SSH x-forwarding ile açılan tünel içerisinden “**Güvenlik Duvarı Yönetim Sistemi Kontrol Paneli**” uygulamasına kontrollü olarak aşağıdaki komut ile ulaşılır.
-```
-$ sudo ssh -X ahtapotops@FirewallBuilder_IP -i /anahtarin/dizini/kullanici01
+$ ssh -X ahtapotops@FirewallBuilder_IP -i fw_kullanici
+$ gdys-gui
 ```
 * Erişim başarılı bir şekilde sağlandığında, Güvenlik Duvarı Yönetim Sistemi Kontrol Paneli uygulaması otomatik olarak açılacaktır.
 
@@ -376,8 +228,8 @@ $ sudo ssh -X ahtapotops@FirewallBuilder_IP -i /anahtarin/dizini/kullanici01
     * “**Test Betik Dizini**” satırında, söz dizimi bakımından kontrol edilmek üzere test Makinesina gönderilmeden önce betiklerin konumlandırılacağı dizindir. Bu satıra “**/home/ahtapotops/testfw/**” yazılması zaruridir.
     * “**Hata Bildirim Dizini**” alanına, test betiklerinde hata alınması durumda ilgili hata ve logunun yazılması için oluşturulmuş ve tüm Ahtapot projesi kapsamında log yapısı için kullanılan “**/var/log/ahtapot/**” dizini girilir. Yapının bütünlüğünü korumak adına belirtilen dizinin girilmesi zaruridir.
     * “**Test Makinesi IP Adresi**” satırına AHTAPOT Test Güvenlik Duvarı Kurulum dokümanı takip edilerek kurulan test güvenlik duvarı makinesinın ip adresi yazılır.
-    * “**Test Makinesi Kullanıcı Adı**” bilgisi olarak “**kontrol**” kullanıcısı girilmesi zaruridir.
-    * “**Test Makinesi Kopya Dizin**” alanı test makinesine gönderilen betiklerin konumlandırılacağı dizini belirtmekte olup, ahtapotops kullanıcısının ana dizini olan “**/home/kontrol/**” olması zaruridir.
+    * “**Test Makinesi Kullanıcı Adı**” bilgisi olarak “**ahtapot**” kullanıcısı girilmesi zaruridir.
+    * “**Test Makinesi Kopya Dizin**” alanı test makinesine gönderilen betiklerin konumlandırılacağı dizini belirtmekte olup, ahtapotops kullanıcısının ana dizini olan “**/home/ahtapotops/**” olması zaruridir.
     * “**Test Makinesi Port Numarası**” alanı test makinesine bağlantı sağlanırken kullanılacak ssh portunun belirtildiği alandır.
 * “**Gitlab Yapılandırma**” tabına geçiş yapılarak, onay mekanizması için AHTAPOT GitLab Kurulum dokümanı takip edilerek yerele kurulmuş olan GitLab sunucusunun bilgileri girilirek “**Kaydet**” butonuna basılır.
     * “**GitLab Bağlantı Adresi**” satırına yerele kurulmuş olan GitLab sunucunun FQDN bilgisi “**https://Gitlabsunucu FQDN**” şeklinde yazılır.

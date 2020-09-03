@@ -18,11 +18,9 @@
 * [CA Kurulumu ve Anahtar Yönetimi](ca-kurulum.md) dokümanında oluşturulan anahtarlar dokümantasyonda MYS sunucusu üzerinde oluşturulmuştur.
 
 ```
-$ cd /home/ahtapotops
-$ mkdir ~/.ssh && chmod 700 ~/.ssh
-$ cp /home/ahtapotops/ahtapotops /home/ahtapotops/.ssh/id_rsa  && chmod 600 /home/ahtapotops/.ssh/id_rsa
-$ cp /home/ahtapotops/ahtapotops-cert.pub /home/ahtapotops/.ssh/id_rsa-cert.pub  && chmod 600 /home/ahtapotops/.ssh/id_rsa-cert.pub
-$ cp /home/ahtapotops/ahtapotops.pub /home/ahtapotops/.ssh/id_rsa.pub  && chmod 600 /home/ahtapotops/.ssh/id_rsa.pub
+$ mkdir -p /home/ahtapotops/.ssh && chmod 700 ~/.ssh
+$ touch /home/ahtapotops/.ssh/authorized_keys && cat ahtapotops.pub >> ~/.ssh/authorized_keys
+$ cp ahtapotops ~/.ssh/id_rsa && cp ahtapotops.pub ~/.ssh/id_rsa.pub && cp ahtapotops-cert.pub ~/.ssh/id_rsa-cert.pub && chmod 600 ~/.ssh/*
 ```
 * Kurulum, sıkılaştırma vb. gibi işleri otomatize etmeyi sağlayan ansible playbook’ları Ahtapot reposundan ahtapot-mys paketi ile indirilebilir veya Github'tan Ahtapot projesi indirilerek, son güncel ahtapotmys kullanılabilir.
 ```
@@ -117,7 +115,7 @@ base_host_servers:
 #       hostname: "ansible"
 ```
 
-* Sunucular sanal ortamda kuruluyor ise, **/etc/ansible/roles/base/vars/kernelmodules_remove.yml** ve **/etc/ansible/roles/base/vars/kernelmodules_blacklist.yml dizinlerindeki modüllerin sanal makina olmamasından kaynaklı hata verebilir. Playbook çalıştıktan sonra hata veren modülü yorum satırı yapabilir veya modülleri kontrol etmek istemiyor iseniz tüm modülleri yorum satırı yapabilir veya silebilirsiniz.
+* Sunucular sanal ortamda kuruluyor ise, **/etc/ansible/roles/base/vars/kernelmodules_remove.yml** ve **/etc/ansible/roles/base/vars/kernelmodules_blacklist.yml** dizinlerindeki modüllerin sanal makina olmamasından kaynaklı hata verebilir. Playbook çalıştıktan sonra hata veren modülü yorum satırı yapabilir veya modülleri kontrol etmek istemiyor iseniz tüm modülleri yorum satırı yapabilir veya silebilirsiniz.
 * Sunucular fiziksel ise herhangi bir değişiklik yapmaya gerek yoktur.
 
 ```
@@ -643,6 +641,14 @@ Yapılandırma işlemlerine geçmek üzere, gitlab adresine bir web tarayıcıs�
 
 ![Gitlab](../img/gitlab_gorseller/gitlab22-2.png)
 
+  * GitLab sayfasından, **ahtapotops/sb** projesine gidiniz. adding **README** satırına basılırak, README dosyasını oluşturunuz.
+
+ ![Gitlab](../img/gitlab_gorseller/gitlab22-3.png)
+
+  * Açılan dosya ekranında, ilk satıra yorum olmasını sağlacak şekilde # simgesi konularak açıklama yazabilirsiniz. Commit message bölümüne yapılan işlem yazınız ve COMMIT CHANGES butonuna basınız.
+
+ ![Gitlab](../img/gitlab_gorseller/gitlab22-4.png)
+
   * Onay mekanizmasının yapısı oluşturmak adına GitLab sayfasından, **ahtapotops / gdys** projesine gidiniz. Bu yapıyı oluşturmak için projede iki adet dal oluşturulmalıdır. **master** ve **onay** dalları bu yapıyı sağlamaktadır. Öncelikli olarak **master** dalını oluşturmak için **adding README** satırına basılırak, bir dosya oluşturunuz. Böylelikle master dalı oluşturacaksınız.
 
 ![Gitlab](../img/gitlab_gorseller/gitlab23.png)
@@ -731,7 +737,7 @@ $ git push origin master
 $ cd /tmp 
 $ git clone ssh://git@gitlab_sunucuadı:ssh_port/ahtapotops/gdys.git 
 $ git clone ssh://git@gitlab_sunucuadı:ssh_port/ahtapotops/sb.git
-$ rm -rf gdys sb
+$ rm -rf /tmp/gdys/ /tmp/sb/
 ```
 
 **NOT :** Ansible yedekli kurulacak ise, yedek sistemde sadece bu madde adımları aşağıdaki şekilde çalıştırılmalıdır.
@@ -762,7 +768,7 @@ $ ansible-playbook /etc/ansible/playbooks/ansible.yml
 Ardından yine başına "**gitlab.yml**" dosyası içinde başına **#** işareti koyduğumuz **post** satırının başındaki **#** işareti silinir ve "**gitlab.yml**" yeniden çalıştırılır.
 
 ```
-$ ansible-playbook /etc/ansible/playbooks/ansible.yml
+$ ansible-playbook /etc/ansible/playbooks/gitlab.yml
 ```
 
 Bu adımlar sonunda artık gitlab ve ansible rolleri tamamıyla kurulmuş olacaktır ve diğer bileşenlerin kurulumuna geçilebilir.
