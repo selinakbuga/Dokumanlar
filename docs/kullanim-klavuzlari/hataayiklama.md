@@ -48,6 +48,34 @@ nsible playbook işlerken, sunucualarınızın bulunduğu sanal ortamlardan kayn
 nano /etc/ansible/roles/base/vars/kernelmodules_remove.yml
 ```
 
+### Gitlab Firewallbuilder Erişim Sorunu
+
+Gitlab ve firewallbuilder makinaları arasında erişim sorunu yaşıyorsanız şu kontrolleri yapınız.
+
+FWB makinasında;
+```
+$ sudo su -
+# cd /etc/fw/gys/
+# git status
+# git pull
+```
+Gitlab arayüzünde, ahtapotops kullanıcısında SSK Keys bölümünde ahtapotops.pub anahtarını, root kullanıcısının SSH Keys bölümünde git.pub anahtarını kontrol ediniz.
+
+### Gitlab MYS Erişim Sorunu
+
+Gitlabta merge edilen kuralın MYS üzerinden basılmasında hata olduğunu düşünüyor iseniz,
+VCS makinasında,
+```
+$ sudo su -
+# su git
+$ bash
+$ /usr/bin/ssh -ntt -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ahtapotops@mys.ahtapot.org.tr -p 22 -i "/var/opt/gitlab/.ssh/gdyshook" 'sudo touch /var/run/firewall'
+$ /usr/bin/ssh -ntt -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ahtapotops@mys.ahtapot.org.tr -p 22 -i "/var/opt/gitlab/.ssh/myshook"
+```
+MYS makinasında,
+```
+$ sudo touch /var/run/firewall
+```
 ### Log Gönderimi Hataları
 
 * Client makinelerden Ossimcik Makinesine veya Ossimcik makinelerinden Ossim ve Rsyslog makinelerine logların gönderilmemesi tespit edilmesi durumunda yapılması gerekenler:
