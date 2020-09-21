@@ -11,7 +11,7 @@ Bu dökümanda Merkezi Yönetim Sistemi bileşenlerinde karşılaşılabilecek h
 
 ###SSH Bağlantı Hataları
 
-* .ssh/authorized_keys dosyası kontrol edilmelidir. ahtapotops.pub anahtarı bu dosyada yazılı olamlıdır.
+* .ssh/authorized_keys dosyası kontrol edilmelidir. ahtapotops.pub anahtarı bu dosyada olup olmadığını kontrol ediniz.
 
 * Playbooklar oynatıldığında ssh bağlantı hatası alınması durumunda yapılması gerekenler;
 ```
