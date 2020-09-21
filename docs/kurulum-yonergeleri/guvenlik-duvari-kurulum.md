@@ -206,7 +206,7 @@ $ sudo su -
 ![Guvenlik-Duvari](../img/entegrasyon4.png)
 
 
-####Güvenlik Duvarı Yönetim Sistemi Arayüz Yapılandırması
+#### Güvenlik Duvarı Yönetim Sistemi Arayüz Yapılandırması
 
 * FWB makinesine erişmek için fw_kullanici anahtarı kullanılacaktır. Oluşturduğunuz fw_kullanici anahtarını masaüstü ortamı olan bilgisayarıza aktarınız. 
 
