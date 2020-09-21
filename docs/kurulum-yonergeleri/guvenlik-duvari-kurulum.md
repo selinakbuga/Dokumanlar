@@ -1,5 +1,5 @@
 ![ULAKBIM](../img/ulakbim.jpg)
-#Güvenlik Duvarı Yönetim Sistemi Kurulumu
+# Güvenlik Duvarı Yönetim Sistemi Kurulumu
 ------------------------------------------
 
 [TOC]
@@ -13,7 +13,7 @@
  |Test Firewall Sunucusu	|   Pardus-Ahtapot17  |
 
 
-####Ansible Playbook ile FirewallBuilder Kurulumu
+#### Ansible Playbook ile FirewallBuilder Kurulumu
 
 * FWB sunucusu VCS ve MYS sunucuları ile ssh bağlantısın kullanacağı için oluşturulan anahtarlar FWB sunucusuna aktarılır ve ilgili yerlere yerleştirilir. 
 
@@ -106,7 +106,7 @@ $ nano /var/opt/gdysgui/gitlab.py
 $ nano /var/opt/gdysgui/gitlab.py
 ```
 
-####Ansible Playbook ile Test Firewall Kurulumu
+#### Ansible Playbook ile Test Firewall Kurulumu
 
 * MYS sunucuları ile ssh bağlantısın kullanacağı için oluşturulan anahtarlar TFW sunucusuna aktarılır ve ilgili yerlere yerleştirilir. 
 
@@ -121,7 +121,7 @@ $ ansible-playbook /etc/ansible/playbooks/testfirewall.yml
 ```
 
 
-####Ansible Playbook ile Firewall Kurulumu
+#### Ansible Playbook ile Firewall Kurulumu
 
 * MYS makinasından FW makinasına paroalsız ssh bağlantısı sağlanmalıdır.
 ```
@@ -164,7 +164,7 @@ $ git commit -m "yapılan değişiklik commiti yazılır"
 $ git push origin master
 ```
 
-####Güvenlik Duvarı Yönetim Sistemi Entegrasyon Adımları
+#### Güvenlik Duvarı Yönetim Sistemi Entegrasyon Adımları
 
 * FWB makinasına bağlanılır ve arayüz yapılandırması yapılır. 
 
@@ -265,7 +265,7 @@ $ gdys-gui
 
 
 
-####Kurulum Sonrası Yapılacak Kontroller
+#### Kurulum Sonrası Yapılacak Kontroller
 
 * Kurulum işlemleri tamamlandığında, “**Base**” playbookunda var olan “**ssh_port**” değişkeni değiştirildi ise, sunuculara bağlantı yapılacak ssh port değiştiğinden GitLab arayüzünden “**ahtapotops/mys**” projesi açılarak “**Files**” dizini altındaki “**ansible.cfg**” dosyasında bulunan “**remote_port**” parametresi mevcut ssh port bilgisi ile değiştirilmelidir.
 
