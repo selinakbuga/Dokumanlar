@@ -132,8 +132,7 @@ $ ssh-copy-id fw.ahtapot.org.tr
 Merkezi Yönetim Sistemi kapsamında kurulacak Git sunucusunun ssh portu girilmelidir.
 
 ```
-$ cd roles/firewall/vars/
-$ sudo vi iptables.yml
+$ nano /etc/ansible/roles/firewall/vars/iptables.yml
 # Iptables yapilandirmasini iceren dosyadir.
 iptables:
     service:
