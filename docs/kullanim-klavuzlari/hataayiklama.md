@@ -7,9 +7,9 @@
 
 Bu dökümanda Merkezi Yönetim Sistemi bileşenlerinde karşılaşılabilecek hatalar ve çözümleri anlatılmaktadır.
 
-####Ahtapot Hata Ayıklama Rehberi
+#### Ahtapot Hata Ayıklama Rehberi
 
-###SSH Bağlantı Hataları
+### SSH Bağlantı Hataları
 
 * .ssh/authorized_keys dosyası kontrol edilmelidir. ahtapotops.pub anahtarı bu dosyada olup olmadığını kontrol ediniz.
 
@@ -48,7 +48,7 @@ nsible playbook işlerken, sunucualarınızın bulunduğu sanal ortamlardan kayn
 nano /etc/ansible/roles/base/vars/kernelmodules_remove.yml
 ```
 
-###Log Gönderimi Hataları
+### Log Gönderimi Hataları
 
 * Client makinelerden Ossimcik Makinesine veya Ossimcik makinelerinden Ossim ve Rsyslog makinelerine logların gönderilmemesi tespit edilmesi durumunda yapılması gerekenler:
 
@@ -79,7 +79,7 @@ $DefaultNetstreamDriverKeyFile /etc/ssl/private/ansible01.gdys.local.key
  tcpdump host client_ip and port 514
  ```
 
-###Kibana Hatalar
+### Kibana Hatalar
 
 * Web Browser'ından kibana'ya bağlanılmak istenildiğinde nginx hatası alınıyor ise kibanın çalıştığı elasticsearch makinesine bağlanmalıdır. Makine içerisinde kibana status'üne bakılmalıdır. 
 ```
@@ -100,7 +100,7 @@ chown kibana:root /var/run/kibana.pid
 kibana is running
 ```
 
-###Elasticsearch Hatalar
+### Elasticsearch Hatalar
 
 * Elasticsearch playbook ile kullanımı tamamlanması ile elasticsearch indexleri "curl" komutu ile incelenmek istenildiğinde "Searchguard not initilized" hatası alınması durumunda searchguard için gerekli yapılandırma komutu girilmelidir. Burada önemli olanlar komut yazılırken searchguard için gerekli anahtarların isimlerinin doğru olması ve "Cluster_Name" değişkeni içerisine elasticsearch içerisinde verilen cluster ismi yazılmalıdır.
 ```
