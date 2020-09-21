@@ -11,6 +11,8 @@ Bu dökümanda Merkezi Yönetim Sistemi bileşenlerinde karşılaşılabilecek h
 
 ###SSH Bağlantı Hataları
 
+* .ssh/authorized_keys dosyası kontrol edilmelidir. ahtapotops.pub anahtarı bu dosyada yazılı olamlıdır.
+
 * Playbooklar oynatıldığında ssh bağlantı hatası alınması durumunda yapılması gerekenler;
 ```
 ssh-copy-id client.fqdn_bilgisi 
@@ -31,6 +33,19 @@ $ sudo systemctl sshd.service
 ```
 $ sudo chown root: /
 $ sudo reboot
+```
+
+### Ansible Çekirdek Modül Hatası
+
+Ansible playbook işlerken, sunucualarınızın bulunduğu sanal ortamlardan kaynaklı **Gereksiz cekirdek modulleri kaldiriliyori (blacklist)** hatası alınabilir. Hata alınan moduller yorum satırı yapılır veya silinir.
+
+```
+nano /etc/ansible/roles/base/vars/kernelmodules_blacklist.yml
+```
+nsible playbook işlerken, sunucualarınızın bulunduğu sanal ortamlardan kaynaklı **Gereksiz cekirdek modulleri kaldiriliyor (fake install)** hatası alınabilir. Hata alınan moduller yorum satırı yapılır veya silinir.
+
+```
+nano /etc/ansible/roles/base/vars/kernelmodules_remove.yml
 ```
 
 ###Log Gönderimi Hataları
