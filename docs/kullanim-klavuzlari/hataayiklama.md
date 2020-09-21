@@ -42,13 +42,13 @@ Ansible playbook işlerken, sunucualarınızın bulunduğu sanal ortamlardan kay
 ```
 nano /etc/ansible/roles/base/vars/kernelmodules_blacklist.yml
 ```
-nsible playbook işlerken, sunucualarınızın bulunduğu sanal ortamlardan kaynaklı **Gereksiz cekirdek modulleri kaldiriliyor (fake install)** hatası alınabilir. Hata alınan moduller yorum satırı yapılır veya silinir.
+Ansible playbook işlerken, sunucualarınızın bulunduğu sanal ortamlardan kaynaklı **Gereksiz cekirdek modulleri kaldiriliyor (fake install)** hatası alınabilir. Hata alınan moduller yorum satırı yapılır veya silinir.
 
 ```
 nano /etc/ansible/roles/base/vars/kernelmodules_remove.yml
 ```
 
-### Gitlab Firewallbuilder Erişim Sorunu
+### VCS Firewallbuilder Erişim Sorunu
 
 Gitlab ve firewallbuilder makinaları arasında erişim sorunu yaşıyorsanız şu kontrolleri yapınız.
 
@@ -61,9 +61,9 @@ $ sudo su -
 ```
 Gitlab arayüzünde, ahtapotops kullanıcısında SSK Keys bölümünde ahtapotops.pub anahtarını, root kullanıcısının SSH Keys bölümünde git.pub anahtarını kontrol ediniz.
 
-### Gitlab MYS Erişim Sorunu
+### VCS MYS Erişim Sorunu
 
-Gitlabta merge edilen kuralın MYS üzerinden basılmasında hata olduğunu düşünüyor iseniz,
+Gitlab arayüzünde onaylanan edilen kuralın MYS üzerinden çalıştırılmasında hata olduğunu düşünüyor iseniz,
 VCS makinasında,
 ```
 $ sudo su -
