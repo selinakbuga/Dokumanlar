@@ -1,5 +1,5 @@
 ![ULAKBIM](../img/ulakbim.jpg)
-#Merkezi Yönetim Sistemi ve Versiyon Kontrol Sistemi Kurulumları
+# Merkezi Yönetim Sistemi ve Versiyon Kontrol Sistemi Kurulumları
 ------
 
 [TOC]
@@ -12,8 +12,8 @@
  |     VCS	|   Pardus-Ahtapot17  |
 
 
-###MYS KURULUMU
-####Ansible Kurulum İşlemleri
+### MYS KURULUMU
+#### Ansible Kurulum İşlemleri
 
 * [CA Kurulumu ve Anahtar Yönetimi](ca-kurulum.md) dokümanında oluşturulan anahtarlar dokümantasyonda MYS sunucusu üzerinde oluşturulmuştur.
 
@@ -254,9 +254,9 @@ $ ansible-playbook /etc/ansible/playbooks/ansible.yml
 
 ```
 
-###VCS KURULUMU
+### VCS KURULUMU
 
-####Ansible ile GitLab Kurulumu
+#### Ansible ile GitLab Kurulumu
 
 * [CA Kurulumu ve Anahtar Yönetimi](ca-kurulum.md) dokümanına göre MYS sunucusunda oluşturulan anahtarlar VCS sunucusuna taşıyınız.
 * Git kurulumdan sonra parolasız git işlemlerini yapabilmek için [CA Kurulumu ve Anahtar Yönetimi](ca-kurulum.md) dokümanına uygun bir şekilde oluşturulmuş git kullanıcısına ait anahtalar, GitLab sunucu üzerinde ilgili yerlere kopyalama işlemi yapılmalıdır. Bu adımlar hem GitLab sunucusunda yedekli kurulacak ise yedek GitLab sunucusunda da yapılmalıdır.
@@ -525,7 +525,7 @@ $ exit
 **NOT :** Gitlab yedekli kurulacak ise, yedek sistem üzerinde bu adımlar el ile yapılmalıdır.
 
 
-####GitLab Arayüz Yapılandırması
+#### GitLab Arayüz Yapılandırması
 
 Gitlab yedekli kurulacak ise, yedek sistemin üzerinde arayüz yapılandırma işlemlerinin yapılmasına gerek yoktur.
 
