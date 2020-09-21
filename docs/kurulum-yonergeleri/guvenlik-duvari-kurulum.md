@@ -24,7 +24,7 @@ $ cat ahtapotops.pub fw_kullanici.pub >> ~/.ssh/authorized_keys
 $ cp ahtapotops ~/.ssh/id_rsa && cp ahtapotops.pub ~/.ssh/id_rsa.pub && cp ahtapotops-cert.pub ~/.ssh/id_rsa-cert.pub && chmod 600 ~/.ssh/*
 ```
 ```
-# mkdir -p /root/.ssh &&
+# mkdir -p /root/.ssh && chmod 700 ~/.ssh
 # cp git /root/.ssh/id_rsa && cp git.pub /root/.ssh/id_rsa.pub && cp git.pub /root/authorized_keys
 ```
 
