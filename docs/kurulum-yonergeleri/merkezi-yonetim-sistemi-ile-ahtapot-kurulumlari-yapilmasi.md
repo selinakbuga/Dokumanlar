@@ -770,5 +770,8 @@ Ardından yine başına "**gitlab.yml**" dosyası içinde başına **#** işaret
 ```
 $ ansible-playbook /etc/ansible/playbooks/gitlab.yml
 ```
+```
+$ crontab -e
+> * * * * * (sleep 30; /usr/bin/python /usr/bin/update-ahtapot.py)
 
 Bu adımlar sonunda artık gitlab ve ansible rolleri tamamıyla kurulmuş olacaktır ve diğer bileşenlerin kurulumuna geçilebilir.
