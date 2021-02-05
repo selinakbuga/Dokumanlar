@@ -60,7 +60,7 @@ base_repositories:
         updatecache: yes
         state: present
     repo05:
-        url: 'deb [trusted=yes] http://depo.pardus.org.tr/ahtapot-siem yenikusak main'
+        url: 'deb http://depo.ahtapot.org.tr/ahtapot siem main'
         updatecache: yes
         state: present   
 #    repoXX:
