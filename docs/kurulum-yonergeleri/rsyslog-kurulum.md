@@ -83,18 +83,8 @@ $ ansible-playbook /etc/ansible/playbooks/rsyslog.yml
 
 ### OSSIMCIK Kurulumu
 
-* **NOT:** Dökümanda yapılması istenilen değişiklikler gitlab arayüzü yerine terminal üzerinden yapılması durumunda playbook oynatılmadan önce yapılan değişiklikler git'e push edilmelidir.
 
-```
-$ cd /etc/ansible
-git status komutu ile yapılan değişiklikler gözlemlenir.
-$ git status  
-$ git add --all
-$ git commit -m "yapılan değişiklik commiti yazılır"
-$ git push origin master
-```
-
-* Ahtapot Temel ISO ile kurulumu sağlanmış olan sunucunun Merkezi Yönetim Sistemi ile bağlanıtısı sağlandıktan sonra OSSIMCIK rolünü yüklemesi için Ansible Playbook oynatılır.
+* Ossimcik makinasının MYS ile key ile ssh bağlantısı sağlanır.
 * GitLab arayüzünde MYS reposunda bulunan **hosts** dosyasına "**ossimcik**" rolü altına ilgili makinanın fqdn bilgileri yazılır.
 ```
 [ossimcik]
