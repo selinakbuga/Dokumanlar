@@ -16,7 +16,7 @@
 Kurulacak sistem, SIEM yapısına dahil edilmek isteniyorsa, kurulum sonrasında Siber Olay, Açıklık, Risk İzleme ve Yönetim Sistemi Kurulumu sayfasında bulunan 
 MYS Clientlarında Ossec Agent Dağıtımı başlığı incelenmelidir.
 
-**/etc/ansible/roles/base/vars/rsyslog.yml** dosyası içerisine **ossimciks** altında bulunan **server1** altına ossimcik makinesine log gonderilmesi istenilen clientların **client** içerisinde **FQDN** bilgileri girilir.  **rsyslog** altında bulunan **permittedpeer** satırına ossimcik makinesinin bilgisi girilir.
+* **/etc/ansible/roles/base/vars/rsyslog.yml** içerisinde mys sisteminde bulunan makinelerin log göndereceği ossimcik belirlenir. **rsyslog** altında bulunan **permittedpeer** satırına ossimcik makinesinin bilgisi girilir. **ossimciks** altında **server1** içerisine **ossimcik_fqdn** bilgisi **clients** altında **client01** içerisinde ossimcik'e log göndericek **client makinelerin fqdn** bilgisi girilir.
 ```
 $ nano /etc/ansible/roles/base/vars/rsyslog.yml
 
@@ -105,55 +105,7 @@ vi/etc/ansible/roles/ossimcik/vars/rsyslog.yml
     rsyslog_server: "rsyslog.ahtapot.org"
     ossim_server: "ossim01.ahtapot.org"
 ```
-* **/etc/ansible/roles/base/vars/rsyslog.yml** içerisinde mys sisteminde bulunan makinelerin loglarını göndereceği ossimcikler belirlenir ve **ossimciks** altında **server1** içerisine **ossimcik_fqdn** bilgisi **clients** altında **client01** içerisinde ossimcik'e log göndericek **client makinelerin fqdn** bilgisi girilir.
-```
-vi /etc/ansible/roles/base/vars/rsyslog.yml 
----
-# Log sunucu ayarlarini iceren dosyadir.
-# Yorum satiri ile gosterilen sablon doldurularak istenilen kadar log sunucusu eklenebilir.
-rsyslog:
-   conf:
-      source: "rsyslog.conf.j2"
-      destination: "/etc/rsyslog.conf"
-      owner: "root"
-      group: "root"
-      mode: "0644"
-   service:
-      name: "rsyslog"
-      state: "started"
-      enabled: "yes"
-   tls:
-      state: "on"
-      cacert: "/etc/ssl/certs/rootCA.pem"
-      mycert: "/etc/ssl/certs/{{ ansible_fqdn }}.crt"
-      mykey: "/etc/ssl/private/{{ ansible_fqdn }}.key"
-      authmode: "name"
-      permittedpeer: "ossimcik.ahtapot.org.tr"
-   MainQueueSize: "100000"
-   MainQueueWorkerThreads: "2"
-   ActionResumeRetryCount: "-1"
-   QueueType: "LinkedList"
-   QueueFileNameANS: "srvfrwd_ans"
-   QueueFileNameIPT: "srvfrwd_iptables"
-   QueueFileNameSYS: "srvfrwd_syslog"
-   QueueFileNameSURICATA: "srvfrwd_suricata"
-   QueueSaveOnShutdown: "on"
-   QueueMaxFileSize: "100m"
-   QueueSize: "250000"
-   asyncWriting: "on"
-   ioBufferSize: "256k"
-   Mode: "inotify"
-   WorkDirectory: "/var/spool/rsyslog"
-   IncludeConfig: "/etc/rsyslog.d/*"
 
-ossimciks:
-   server01:
-      fqdn: "ossimcik.ahtapot.org.tr"
-      port: "20514"
-      clients:
-        - "mys.ahtapot.org.tr"
-        - "git.ahtapot.org.tr"
-#       - "*.ahtapot.org.tr"
 ```
 * "**/etc/ansible/roles/rsyslog/vars/rsyslog.yml**" dosyası içerinde ossim, ossim korelasyon ve ossec makinalarının ip adresleri girilir. **permittedpeer:** bilgisine genelden log toplayabilmesi için ** *.ahtapot.org.tr** yazılır.
 ```
