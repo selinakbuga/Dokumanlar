@@ -180,7 +180,8 @@ ossimcik_rsyslog:
    LogLocationUSB: "/var/log/usb.log"
    LogLocationALL: "/var/log/client.log"
 
-#    permittedpeer: ["ossimcik.ahtapot.org.tr"]
+#    permittedpeer: "mys.ahtapot.org.tr"
+#    permittedpeer: '"mys.ahtapot.org.tr", "vcs.ahtapot.org.tr", "ipds.ahtapot.org.tr"'
 #    rsyslog_server: "rsyslog.ahtapot.org"
 #    ossim_server: "ossim01.ahtapot.org"
 ```
