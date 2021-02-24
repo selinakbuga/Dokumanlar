@@ -15,6 +15,7 @@
 
 Kurulacak sistem, SIEM yapısına dahil edilmek isteniyorsa, kurulum sonrasında Siber Olay, Açıklık, Risk İzleme ve Yönetim Sistemi Kurulumu sayfasında bulunan 
 MYS Clientlarında Ossec Agent Dağıtımı başlığı incelenmelidir.
+
 **/etc/ansible/roles/base/vars/rsyslog.yml** dosyası içerisine **ossimciks** altında bulunan **server1** altına ossimcik makinesine log gonderilmesi istenilen clientların **client** içerisinde **FQDN** bilgileri girilir.  **rsyslog** altında bulunan **permittedpeer** satırına ossimcik makinesinin bilgisi girilir.
 ```
 $ nano /etc/ansible/roles/base/vars/rsyslog.yml
