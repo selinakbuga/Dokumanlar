@@ -122,16 +122,16 @@ sources:
 
 ```
 
-
-Log yollayacak makinaların rsyslog düzenlemesini yapacak olan **rsyslog.yml** playbook’u çalıştırılır.
+Rsyslog makinası ve log yollayacak makinaların rsyslog düzenlemesini yapacak olan **rsyslog.yml** playbook’u çalıştırılır.
 ```
 $ ansible-playbook /etc/ansible/playbooks/rsyslog.yml
 ```
 
 ### OSSIMCIK KURULUMU
 
-* **/etc/ansible/roles/ossimcik/vars/rsyslog.yml** dosyası içerisinde ossimcik makinesinin logları göndermesi istenilen rsyslog ve ossim makinelerinin fqdn bilgileri girilir. **permittedpeer** satırına ossimcik makinasının fqdn bilgisi girilir.
+**/etc/ansible/roles/ossimcik/vars/rsyslog.yml** dosyası içerisinde ossimcik makinesinin logları göndermesi istenilen rsyslog ve ossim makinelerinin fqdn bilgileri girilir. **permittedpeer** satırına ossimcik makinasının fqdn bilgisi girilir.
 ```
+$ nano /etc/ansible/roles/ossimcik/vars/rsyslog.yml
 # Rsyslog degiskenlerinin tutuldugu dosyadir.
 ossimcik_rsyslog:
    service:
@@ -181,21 +181,13 @@ ossimcik_rsyslog:
 #    ossim_server: "ossim01.ahtapot.org"
 ```
 
-
-
-* ISO kurulumu tamamlanmmış ve OSSIMCIK rolü yüklenecek makina üzerinde ansible playbooku çalıştırmak için, Ansible makinasına **ahtapotops** kullanıcısı ile SSH bağlantısı yapılarak, "**ossimcik.yml**" playbooku çalıştırılır.
+Ossimcik makinası üzerinde ansible playbooku çalıştırmak için, Ansible makinasına **ahtapotops** kullanıcısı ile SSH bağlantısı yapılarak, "**ossimcik.yml**" playbooku çalıştırılır.
 ```
-$ cd /etc/ansible
-$ ansible-playbook playbooks/ossimcik.yml
+$ ansible-playbook /etc/ansible/playbooks/ossimcik.yml
 ```
 * Ossimcik playbookunun oynatılmasının ardından Rsyslog ve Nxlog **SSL** ile haberleşmeleri için sertifikalar yerleştirilmelidir.
-**NOT:** Anahtar oluşturulması için CA Kurulumu ve Anahtar Yönetimi dökümanındaki [Log Yönetimi Anahtar Oluşturma](ca-kurulum.md) başlığı incelenmelidir.
 
-
-**NOT:** Log gönderici client makinelerine rsyslog icin gerekli anahtarlar konulmalıdır.
-
-**NOT:** Anahtar oluşturulması için [CA Kurulumu ve Anahtar Yönetimi](ca-kurulum.md) dökümanındaki SSL Anahtar Oluşturma başlığı incelenmelidir. 
-Oluşturulan anahtarlar client makineler içerisinde aşağıdaki dizinlere konulmalıdır. “client_fqdn” yerine client makinenin FQDN bilgisi girilmelidir.
+Log gönderici client makinelerine rsyslog icin gerekli anahtarlar konulmalıdır. Anahtar oluşturulması için [CA Kurulumu ve Anahtar Yönetimi](ca-kurulum.md) dökümanındaki SSL Anahtar Oluşturma başlığı incelenmelidir. Oluşturulan anahtarlar client makineler içerisinde aşağıdaki dizinlere konulmalıdır. “client_fqdn” yerine client makinenin FQDN bilgisi girilmelidir.
 
 ```
 /etc/ssl/certs/rootCA.pem
@@ -203,30 +195,30 @@ Oluşturulan anahtarlar client makineler içerisinde aşağıdaki dizinlere konu
 /etc/ssl/private/client_fqdn.key
 ```
 
-* Rsyslog için rootCA sertifikası **/etc/ssl/private** dizini altına kopyalanır.
+Rsyslog için rootCA sertifikası **/etc/ssl/private** dizini altına kopyalanır.
 ```
 vi /etc/ssl/certs/rootCA.pem
 ```
-* Ossimcik sertifikaları ossimcik **FQDN** ismi ile dosya oluşturularak aşağıdaki dizinlere kopyalanır.
+Ossimcik sertifikaları ossimcik **FQDN** ismi ile dosya oluşturularak aşağıdaki dizinlere kopyalanır.
 ```
 vi /etc/ssl/certs/ossimcik01.gdys.local.crt
 vi /etc/ssl/private/ossimcik01.gdys.local.key
 ```
-* Sertifikaların yerleştirilmesiyle Rsyslog servisi yeniden başlatılır.
+Sertifikaların yerleştirilmesiyle Rsyslog servisi yeniden başlatılır.
 ```
 systemctl restart rsyslog.service
 ```
-* Nxlog sertifikaları için rsyslog ile aynı sertifikalar kullanılır. Nxlog sertifikaları okuyabilmesi için yeni bir dizin oluşturulur.
+Nxlog sertifikaları için rsyslog ile aynı sertifikalar kullanılır. Nxlog sertifikaları okuyabilmesi için yeni bir dizin oluşturulur.
 ```
 mkdir /etc/ssl/nxlog
 ```
-* Oluşturulan dizin içerisine aşağıdaki gibi **rootCA** isimli ve makinenin **FQDN** isimili dosyalar oluşturularak keyler kopyalanır. 
+Oluşturulan dizin içerisine aşağıdaki gibi **rootCA** isimli ve makinenin **FQDN** isimili dosyalar oluşturularak keyler kopyalanır. 
 ```
 vi /etc/ssl/nxlog/rootCA.pem
 vi /etc/ssl/nxlog/ossimcik01.gdys.local.crt
 vi /etc/ssl/nxlog/ossimcik01.gdys.local.key
 ```
-* Sertifikalar yerlestirilmesiyle Nxlog servisi yeniden başlatılır.
+Sertifikalar yerlestirilmesiyle Nxlog servisi yeniden başlatılır.
 ```
 systemctl restart nxlog.service
 ```
