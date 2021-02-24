@@ -11,47 +11,52 @@ MYS Clientlarında Ossec Agent Dağıtımı başlığı incelenmelidir.
 * "roles/base/vars” klasörü altında rsyslog değişkenlerinin barındıran “rsyslog.yml” dosyası içerisine "base_ossimcik_servers" fonksiyonu altında bulunan “server1” ve “server2” satırları altına ossimcik $
 Ossimcik makinelerine log gonderilmesi istenilen clientların "client" içerisinde FQDN bilgileri girilir.
 ```
-$ cd roles/base/vars/
-$ sudo vi rsyslog.yml
+$ nano /etc/ansible/roles/base/vars/rsyslog.yml
+
 # Log sunucu ayarlarini iceren dosyadir.
 # Yorum satiri ile gosterilen sablon doldurularak istenilen kadar log sunucusu eklenebilir.
 rsyslog:
-    conf:
-        source: "rsyslog.conf.j2"
-        destination: "/etc/rsyslog.conf"
-        owner: "root"
-        group: "root"
-        mode: "0644"
-    service:
-        name: "rsyslog"
-        state: "started"
-        enabled: "yes"
-    ActionQueueMaxDiskSpace: "2g"
-    ActionQueueSaveOnShutdown: "on"
-    ActionQueueType: "LinkedList"
-    ActionResumeRetryCount: "-1"
-    WorkDirectory: "/var/spool/rsyslog"
-    IncludeConfig: "/etc/rsyslog.d/*"
+   conf:
+      source: "rsyslog.conf.j2" 
+      destination: "/etc/rsyslog.conf" 
+      owner: "root" 
+      group: "root" 
+      mode: "0644" 
+   service:
+      name: "rsyslog" 
+      state: "started" 
+      enabled: "yes"
+   tls:
+      state: "on"
+      cacert: "/etc/ssl/certs/rootCA.pem"
+      mycert: "/etc/ssl/certs/{{ ansible_fqdn }}.crt"
+      mykey: "/etc/ssl/private/{{ ansible_fqdn }}.key"   
+      authmode: "name"
+      permittedpeer: ""
+   MainQueueSize: "100000"
+   MainQueueWorkerThreads: "2"
+   ActionResumeRetryCount: "-1"
+   QueueType: "LinkedList"
+   QueueFileNameANS: "srvfrwd_ans"
+   QueueFileNameIPT: "srvfrwd_iptables"
+   QueueFileNameSYS: "srvfrwd_syslog"
+   QueueFileNameSURICATA: "srvfrwd_suricata"
+   QueueSaveOnShutdown: "on"
+   QueueMaxFileSize: "100m"
+   QueueSize: "250000"
+   asyncWriting: "on" 
+   ioBufferSize: "256k" 
+   Mode: "inotify"
+   WorkDirectory: "/var/spool/rsyslog" 
+   IncludeConfig: "/etc/rsyslog.d/*" 
 
-base_ossimcik_servers:
-    server1:
-        fqdn: "ossimcik.gdys.local"
-        port: "514"
-        severity: "*"
-        facility: "*"
-        clients:
-            client01:
-                fqdn: "ansible_fqdn"
-            client02:
-                fqdn: "gitlab_fqdn"
-#    serverX:
-#        fqdn: ""
-#        port: ""
-#        severity: "*"
-#        facility: "*"
-#        clients:
-#            client01:
-#                fqdn:
+ossimciks:
+   server01:
+      fqdn: "OSSIMCIK_FQDN"
+      port: "20514"
+      clients:
+        - "LOG_KAYNAGI_FQDN"
+        - "LOG_KAYNAGI_FQDN"
 ```
 **NOT:** Log gönderici client makinelerine rsyslog icin gerekli anahtarlar konulmalıdır.
 
