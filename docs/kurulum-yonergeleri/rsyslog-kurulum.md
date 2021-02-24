@@ -106,7 +106,11 @@ vi/etc/ansible/roles/ossimcik/vars/rsyslog.yml
     ossim_server: "ossim01.ahtapot.org"
 ```
 
+```
+* "**/etc/ansible/roles/rsyslog/vars/rsyslog.yml**" dosyası içerinde ossim, ossim korelasyon ve ossec makinalarının ip adresleri girilir. **permittedpeer:** bilgisine genelden log toplayabilmesi için ** *.ahtapot.org.tr** yazılır.
+```
 
+```
 nano /etc/ansible/roles/rsyslog/vars/rsyslog.yml
 ---
 # Rsyslog'un degiskenlerini iceren dosyadir
