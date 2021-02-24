@@ -7,8 +7,8 @@
 
  |   İsterler	|   İşletim Sistemi   |
  |  ----------	|  -----------------  |
- |    OSSİMCİK	|   Pardus-Ahtapot17  |
- |    RSYSLOG	|   Pardus-Ahtapot17  |
+ |     RSYSLOG	|   Pardus-Ahtapot17  |
+ |     OSSİMCİK	|   Pardus-Ahtapot17  |
 
 
 ### RSYSLOG KURULUMU
