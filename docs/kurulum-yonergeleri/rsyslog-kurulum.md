@@ -13,6 +13,8 @@
 
 ### RSYSLOG KURULUMU
 
+MYS ve RSYSLOG makinalarının ssh bağlantısı sağlanır. 
+
 Kurulacak sistem, SIEM yapısına dahil edilmek isteniyorsa, kurulum sonrasında Siber Olay, Açıklık, Risk İzleme ve Yönetim Sistemi Kurulumu sayfasında bulunan 
 MYS Clientlarında Ossec Agent Dağıtımı başlığı incelenmelidir.
 
@@ -129,6 +131,8 @@ $ ansible-playbook /etc/ansible/playbooks/rsyslog.yml
 
 ### OSSIMCIK KURULUMU
 
+MYS ve OSSİMCİK makinalarının ssh bağlantısı sağlanır. 
+
 **/etc/ansible/roles/ossimcik/vars/rsyslog.yml** dosyası içerisinde ossimcik makinesinin logları göndermesi istenilen rsyslog ve ossim makinelerinin fqdn bilgileri girilir. **permittedpeer** satırına ossimcik makinasının fqdn bilgisi girilir.
 ```
 $ nano /etc/ansible/roles/ossimcik/vars/rsyslog.yml
@@ -181,28 +185,22 @@ ossimcik_rsyslog:
 #    ossim_server: "ossim01.ahtapot.org"
 ```
 
-Ossimcik makinası üzerinde ansible playbooku çalıştırmak için, Ansible makinasına **ahtapotops** kullanıcısı ile SSH bağlantısı yapılarak, "**ossimcik.yml**" playbooku çalıştırılır.
+**ossimcik.yml** playbooku çalıştırılır.
 ```
 $ ansible-playbook /etc/ansible/playbooks/ossimcik.yml
 ```
-* Ossimcik playbookunun oynatılmasının ardından Rsyslog ve Nxlog **SSL** ile haberleşmeleri için sertifikalar yerleştirilmelidir.
+Ossimcik playbookunun oynatılmasının ardından Rsyslog ve Nxlog **SSL** ile haberleşmeleri için sertifikalar yerleştirilmelidir.
 
 Log gönderici client makinelerine rsyslog icin gerekli anahtarlar konulmalıdır. Anahtar oluşturulması için [CA Kurulumu ve Anahtar Yönetimi](ca-kurulum.md) dökümanındaki SSL Anahtar Oluşturma başlığı incelenmelidir. Oluşturulan anahtarlar client makineler içerisinde aşağıdaki dizinlere konulmalıdır. “client_fqdn” yerine client makinenin FQDN bilgisi girilmelidir.
 
-```
-/etc/ssl/certs/rootCA.pem
-/etc/ssl/certs/client_fqdn.crt
-/etc/ssl/private/client_fqdn.key
-```
-
 Rsyslog için rootCA sertifikası **/etc/ssl/private** dizini altına kopyalanır.
 ```
-vi /etc/ssl/certs/rootCA.pem
+/etc/ssl/certs/rootCA.pem
 ```
 Ossimcik sertifikaları ossimcik **FQDN** ismi ile dosya oluşturularak aşağıdaki dizinlere kopyalanır.
 ```
-vi /etc/ssl/certs/ossimcik01.gdys.local.crt
-vi /etc/ssl/private/ossimcik01.gdys.local.key
+/etc/ssl/certs/client_fqdn.crt
+/etc/ssl/private/client_fqdn.key
 ```
 Sertifikaların yerleştirilmesiyle Rsyslog servisi yeniden başlatılır.
 ```
@@ -214,9 +212,9 @@ mkdir /etc/ssl/nxlog
 ```
 Oluşturulan dizin içerisine aşağıdaki gibi **rootCA** isimli ve makinenin **FQDN** isimili dosyalar oluşturularak keyler kopyalanır. 
 ```
-vi /etc/ssl/nxlog/rootCA.pem
-vi /etc/ssl/nxlog/ossimcik01.gdys.local.crt
-vi /etc/ssl/nxlog/ossimcik01.gdys.local.key
+/etc/ssl/nxlog/rootCA.pem
+/etc/ssl/nxlog/client_fqdn.crt
+/etc/ssl/nxlog/client_fqdn.key
 ```
 Sertifikalar yerlestirilmesiyle Nxlog servisi yeniden başlatılır.
 ```
