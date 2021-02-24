@@ -81,23 +81,8 @@ $ ansible-playbook /etc/ansible/playbooks/rsyslog.yml
 ```
 
 
-### OSSIMCIK Kurulumu
+### OSSIMCIK KURULUMU
 
-
-* Ossimcik makinasının MYS ile key ile ssh bağlantısı sağlanır.
-* GitLab arayüzünde MYS reposunda bulunan **hosts** dosyasına "**ossimcik**" rolü altına ilgili makinanın fqdn bilgileri yazılır.
-```
-[ossimcik]
-ossimcik01.fqdn_bilgisi
-```
-
-* GitLab arayüzünde MYS reposunda "**roles/base/vars/hosts.yml**" dosyasına ossimcik makinasının bilgileri eklenir.
-```
-    server22:
-        ip: "x.x.x.x" 
-        fqdn: "ossimcik01.gdys.local"
-        hostname: "ossimcik01"
-```
 * **/etc/ansible/roles/ossimcik/vars/rsyslog.yml** dosyası içerisinde ossimcik makinesinin logları göndermesi istenilen rsyslog ve ossim makinelerinin fqdn bilgileri girilir. **permittedpeer** satırına ossimcik makinasının fqdn bilgisi girilir.
 ```
 vi/etc/ansible/roles/ossimcik/vars/rsyslog.yml
