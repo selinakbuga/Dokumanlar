@@ -68,7 +68,7 @@ ossimciks:
         - "LOG_KAYNAGI_FQDN"
 ```
 
-**/etc/ansible/roles/rsyslog/vars/rsyslog.yml** dosyası içerinde ossim, ossim korelasyon ve ossec makinalarının ip adresleri girilir. **permittedpeer:** bilgisine genelden log toplayabilmesi için ** *.ahtapot.org.tr** veya log yollayacak makinaların **FQDN** bilgileri yazılır. (mys.ahtapot.org.tr,vcs.ahtapot.org.tr) yazılır. **OSSIM_IP, OSSIMCIK_IP, OSSIM_IP, OSSIMCORR_IP** bilgileri girilir.
+**/etc/ansible/roles/rsyslog/vars/rsyslog.yml** dosyası içerinde ossim, ossim korelasyon ve ossec makinalarının ip adresleri girilir. **permittedpeer:** bilgisine genelden logların imzalanacağı **rsyslog** makinasının bilgisi girilir.
 
 ```
 nano /etc/ansible/roles/rsyslog/vars/rsyslog.yml
@@ -133,7 +133,7 @@ $ ansible-playbook /etc/ansible/playbooks/rsyslog.yml
 
 MYS ve OSSİMCİK makinalarının ssh bağlantısı sağlanır. 
 
-**/etc/ansible/roles/ossimcik/vars/rsyslog.yml** dosyası içerisinde ossimcik makinesinin logları göndermesi istenilen rsyslog ve ossim makinelerinin fqdn bilgileri girilir. **permittedpeer** satırına ossimcik makinasının fqdn bilgisi girilir.
+**/etc/ansible/roles/ossimcik/vars/rsyslog.yml** dosyası içerisinde ossimcik makinesinin logları göndermesi istenilen rsyslog ve ossim makinelerinin fqdn bilgileri girilir. **permittedpeer:** bilgisine genelden log toplayabilmesi için ** *.ahtapot.org.tr** veya log yollayacak makinaların **FQDN** bilgileri yazılır. (mys.ahtapot.org.tr,vcs.ahtapot.org.tr) yazılır. 
 ```
 $ nano /etc/ansible/roles/ossimcik/vars/rsyslog.yml
 # Rsyslog degiskenlerinin tutuldugu dosyadir.
