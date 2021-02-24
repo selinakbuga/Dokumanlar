@@ -11,9 +11,8 @@
  |    RSYSLOG	|   Pardus-Ahtapot17  |
 
 
-### MYS KURULUMU
+### RSYSLOG KURULUMU
 
-####Ansible Playbookları ile Rsyslog Kurulumu
 **NOT:**Kurulacak sistem, SIEM yapısına dahil edilmek isteniyorsa, kurulum sonrasında Siber Olay, Açıklık, Risk İzleme ve Yönetim Sistemi Kurulumu sayfasında bulunan 
 MYS Clientlarında Ossec Agent Dağıtımı başlığı incelenmelidir.
 * "roles/base/vars” klasörü altında rsyslog değişkenlerinin barındıran “rsyslog.yml” dosyası içerisine "base_ossimcik_servers" fonksiyonu altında bulunan “server1” altına ossimcik $
