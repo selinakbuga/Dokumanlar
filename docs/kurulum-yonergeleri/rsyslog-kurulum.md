@@ -13,10 +13,9 @@
 
 ### RSYSLOG KURULUMU
 
-**NOT:**Kurulacak sistem, SIEM yapısına dahil edilmek isteniyorsa, kurulum sonrasında Siber Olay, Açıklık, Risk İzleme ve Yönetim Sistemi Kurulumu sayfasında bulunan 
+Kurulacak sistem, SIEM yapısına dahil edilmek isteniyorsa, kurulum sonrasında Siber Olay, Açıklık, Risk İzleme ve Yönetim Sistemi Kurulumu sayfasında bulunan 
 MYS Clientlarında Ossec Agent Dağıtımı başlığı incelenmelidir.
-* "roles/base/vars” klasörü altında rsyslog değişkenlerinin barındıran “rsyslog.yml” dosyası içerisine "base_ossimcik_servers" fonksiyonu altında bulunan “server1” altına ossimcik $
-Ossimcik makinelerine log gonderilmesi istenilen clientların "client" içerisinde FQDN bilgileri girilir. **permittedpeer** satırına ossimcik makinesinin bilgisi girilir.
+**/etc/ansible/roles/base/vars/rsyslog.yml** dosyası içerisine **ossimciks** altında bulunan **server1** altına ossimcik makinesine log gonderilmesi istenilen clientların **client** içerisinde **FQDN** bilgileri girilir.  **rsyslog** altında bulunan **permittedpeer** satırına ossimcik makinesinin bilgisi girilir.
 ```
 $ nano /etc/ansible/roles/base/vars/rsyslog.yml
 
