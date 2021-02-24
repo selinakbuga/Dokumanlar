@@ -65,20 +65,6 @@ ossimciks:
         - "LOG_KAYNAGI_FQDN"
         - "LOG_KAYNAGI_FQDN"
 ```
-**NOT:** Log gönderici client makinelerine rsyslog icin gerekli anahtarlar konulmalıdır.
-
-**NOT:** Anahtar oluşturulması için [CA Kurulumu ve Anahtar Yönetimi](ca-kurulum.md) dökümanındaki SSL Anahtar Oluşturma başlığı incelenmelidir. 
-Oluşturulan anahtarlar client makineler içerisinde aşağıdaki dizinlere konulmalıdır. “client_fqdn” yerine client makinenin FQDN bilgisi girilmelidir.
-
-```
-/etc/ssl/certs/rootCA.pem
-/etc/ssl/certs/client_fqdn.crt
-/etc/ssl/private/client_fqdn.key
-```
-* “Ansible Playbookları” dokümanında detaylı anlatımı bulunan, sunucu üzerinde gerekli sıkılaştırma işlemleri ve rsyslog kurulumu yapacak olan “rsyslog.yml” playbook’u çalıştırılır.
-```
-$ ansible-playbook /etc/ansible/playbooks/rsyslog.yml
-```
 
 
 ### OSSIMCIK KURULUMU
@@ -155,6 +141,24 @@ $ ansible-playbook playbooks/ossimcik.yml
 ```
 * Ossimcik playbookunun oynatılmasının ardından Rsyslog ve Nxlog **SSL** ile haberleşmeleri için sertifikalar yerleştirilmelidir.
 **NOT:** Anahtar oluşturulması için CA Kurulumu ve Anahtar Yönetimi dökümanındaki [Log Yönetimi Anahtar Oluşturma](ca-kurulum.md) başlığı incelenmelidir.
+
+
+**NOT:** Log gönderici client makinelerine rsyslog icin gerekli anahtarlar konulmalıdır.
+
+**NOT:** Anahtar oluşturulması için [CA Kurulumu ve Anahtar Yönetimi](ca-kurulum.md) dökümanındaki SSL Anahtar Oluşturma başlığı incelenmelidir. 
+Oluşturulan anahtarlar client makineler içerisinde aşağıdaki dizinlere konulmalıdır. “client_fqdn” yerine client makinenin FQDN bilgisi girilmelidir.
+
+```
+/etc/ssl/certs/rootCA.pem
+/etc/ssl/certs/client_fqdn.crt
+/etc/ssl/private/client_fqdn.key
+```
+* “Ansible Playbookları” dokümanında detaylı anlatımı bulunan, sunucu üzerinde gerekli sıkılaştırma işlemleri ve rsyslog kurulumu yapacak olan “rsyslog.yml” playbook’u çalıştırılır.
+```
+$ ansible-playbook /etc/ansible/playbooks/rsyslog.yml
+```
+
+
 
 * Rsyslog için rootCA sertifikası **/etc/ssl/private** dizini altına kopyalanır.
 ```
