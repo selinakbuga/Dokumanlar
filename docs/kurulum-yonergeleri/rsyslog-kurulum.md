@@ -66,7 +66,7 @@ ossimciks:
         - "LOG_KAYNAGI_FQDN"
 ```
 
-* “Ansible Playbookları” dokümanında detaylı anlatımı bulunan, sunucu üzerinde gerekli sıkılaştırma işlemleri ve rsyslog kurulumu yapacak olan “rsyslog.yml” playbook’u çalıştırılır.
+Log yollayacak makinaların rsyslog düzenlemesini yapacak olan **rsyslog.yml** playbook’u çalıştırılır.
 ```
 $ ansible-playbook /etc/ansible/playbooks/rsyslog.yml
 ```
@@ -75,10 +75,54 @@ $ ansible-playbook /etc/ansible/playbooks/rsyslog.yml
 
 * **/etc/ansible/roles/ossimcik/vars/rsyslog.yml** dosyası içerisinde ossimcik makinesinin logları göndermesi istenilen rsyslog ve ossim makinelerinin fqdn bilgileri girilir. **permittedpeer** satırına ossimcik makinasının fqdn bilgisi girilir.
 ```
-vi/etc/ansible/roles/ossimcik/vars/rsyslog.yml
-    permittedpeer: ["ossimcik.ahtapot.org.tr"]
-    rsyslog_server: "rsyslog.ahtapot.org"
-    ossim_server: "ossim01.ahtapot.org"
+---
+# Rsyslog degiskenlerinin tutuldugu dosyadir.
+ossimcik_rsyslog:
+   service:
+      name: "rsyslog"
+      state: "started"
+      enabled: "yes"
+   conf:
+      source: "rsyslog.conf.j2"
+      destination: "/etc/rsyslog.conf"
+      owner: "root"
+      group: "root"
+      mode: "0644"
+   tls:
+      state: "on"
+      cacert: "/etc/ssl/certs/rootCA.pem"
+      mycert: "/etc/ssl/certs/{{ ansible_fqdn }}.crt"
+      myprivkey: "/etc/ssl/private/{{ ansible_fqdn }}.key"
+      authmode: "name"
+      permittedpeer: "CERTIFICATE COMMON NAME"
+   rsyslog_server: "RSYSLOG_FQDN"
+   ossim_server: "OSSIM_FQDN"
+   port: "20514"
+   port_udp: "514"
+   imthreads: "4"
+   MainQueueSize: "100000000"
+   MainQueueWorkerThreads: "4"
+   RsyslogQueueWorkerThreads: "4"
+   asyncWriting: "on"
+   ioBufferSize: "1024k"
+   ActionResumeRetryCount: "-1"
+   ActionQueueFileName01: "fwd_ClientToRsyslog"
+   ActionQueueFileName02: "fwd_AlertsToRsyslog"
+   ActionQueueFileName03: "fwd_AlertsToOSSIM"
+   ActionQueueFileName04: "fwd_WinToRsyslog"
+   ActionQueueSaveOnShutdown: "on"
+   ActionQueueType: "LinkedList"
+   ActionQueueMaxFileSize: "100m"
+   ActionQueueSize: "1000000"
+   Mode: "inotify"
+   WorkDirectory: "/var/spool/rsyslog"
+   IncludeConfig: "/etc/rsyslog.d/*"
+   LogLocationUSB: "/var/log/usb.log"
+   LogLocationALL: "/var/log/client.log"
+
+#    permittedpeer: ["ossimcik.ahtapot.org.tr"]
+#    rsyslog_server: "rsyslog.ahtapot.org"
+#    ossim_server: "ossim01.ahtapot.org"
 ```
 
 ```
