@@ -1,5 +1,5 @@
 ![ULAKBIM](../img/ulakbim.jpg)
-# Log Sistemi ve Rsyslog Kurulumu
+# Log Sistemi Kurulumu
 -----------------
 
 [TOC]
