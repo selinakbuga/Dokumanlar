@@ -66,6 +66,10 @@ ossimciks:
         - "LOG_KAYNAGI_FQDN"
 ```
 
+* “Ansible Playbookları” dokümanında detaylı anlatımı bulunan, sunucu üzerinde gerekli sıkılaştırma işlemleri ve rsyslog kurulumu yapacak olan “rsyslog.yml” playbook’u çalıştırılır.
+```
+$ ansible-playbook /etc/ansible/playbooks/rsyslog.yml
+```
 
 ### OSSIMCIK KURULUMU
 
@@ -153,12 +157,6 @@ Oluşturulan anahtarlar client makineler içerisinde aşağıdaki dizinlere konu
 /etc/ssl/certs/client_fqdn.crt
 /etc/ssl/private/client_fqdn.key
 ```
-* “Ansible Playbookları” dokümanında detaylı anlatımı bulunan, sunucu üzerinde gerekli sıkılaştırma işlemleri ve rsyslog kurulumu yapacak olan “rsyslog.yml” playbook’u çalıştırılır.
-```
-$ ansible-playbook /etc/ansible/playbooks/rsyslog.yml
-```
-
-
 
 * Rsyslog için rootCA sertifikası **/etc/ssl/private** dizini altına kopyalanır.
 ```
