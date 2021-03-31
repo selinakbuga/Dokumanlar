@@ -25,7 +25,7 @@ $ cp ahtapotops ~/.ssh/id_rsa && cp ahtapotops.pub ~/.ssh/id_rsa.pub && cp ahtap
 * Kurulum, sıkılaştırma vb. gibi işleri otomatize etmeyi sağlayan ansible playbook’ları Ahtapot reposundan ahtapot-mys paketi ile indirilebilir veya Github'tan Ahtapot projesi indirilerek, son güncel ahtapotmys kullanılabilir.
 ```
 $ sudo apt-get install -y ahtapot-mys git
-$ git clone -b development https://github.com/Pardus-Ahtapot/MYS.git /tmp/MYS.git && cp -rf /tmp/MYS/ahtapotmys/* /etc/ansible/
+$ git clone -b development https://github.com/Pardus-Ahtapot/MYS.git /tmp/MYS.git && cp -rf /tmp/MYS.git/ahtapotmys/* /etc/ansible/
 $ sudo chown ahtapotops:ahtapotops -R /etc/ansible/
 ```
 Ansible makinası yedekli kurulacak ise, yedek olacak makinanın üzerinde /var/log/ahtapot/ dizini el ile oluşturulup sahipliği ahtapotops kullanıcısı olmalıdır.
